@@ -12,6 +12,7 @@ R(3,k)=heun(Dt(k),t_e);
 R(4,k)=rungekutta(Dt(k),t_e);
 end
 
+% Just to check. Not part of needed output
 printmat(R,'Worksheet 1: Results','Dt Euler Heun RK', '1 1/2 1/4 1/8');
 
 V=10/(1+9*exp(-5));
@@ -24,6 +25,7 @@ for k=2:4
 end
 end
 
+% Just to check. Not part of needed output
 printmat(E,'Worksheet 1: Errors','Dt Exact Euler Heun RK', '1 1/2 1/4 1/8');
 
 Euler=[Dt;E(2,:);zeros(2,4)];
