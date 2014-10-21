@@ -1,5 +1,5 @@
 function tutorial1()
-% Solves ODE for given initial conditon at different timesteps. Prints
+% Solves the ODE for given initial conditon at different timesteps. Prints
 % comparative images for all three methods, displays E, E-tilda, Order.
 % Accounts for non-equal divisions by dt.
 clear, clc
