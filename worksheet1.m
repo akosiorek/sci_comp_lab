@@ -17,6 +17,7 @@ names = {'explicit Euler method (q = 1)', 'method of Heun (q = 2)', 'Runge-Kutta
 colours = {'-r', '-b', '-g', '-m'};
 
 errors = zeros(length(funs), length(deltas));
+approxes = cell(length(funs), length(deltas));
 
 
 for i = 1:length(funs)
@@ -26,15 +27,37 @@ for i = 1:length(funs)
    figure_label = figure(i);    
    hold on
    grid
+   
+   best_error = realmax;
+   best_approx = 0;
+   
    for j = 1:length(deltas)
        delta = deltas(j);
        precise = p(min:delta:max);
-       approx = funs{i}(p_dot, p0, min, max, delta);
-       errors(i, j) = error(precise, approx, delta);
+       approxes{i, j} = funs{i}(p_dot, p0, min, max, delta);
+       errors(i, j) = error(precise, approxes{i, j}, delta);
+       if errors(i, j) < best_error
+           best_error = errors(i, j);
+           best_approx = approxes{i, j};
+       end
        
        x_vals = min:delta:max;
-       plot(x_vals, approx, colours{j});
+       plot(x_vals, approxes{i, j}, colours{j});
    end
+   
+   order = zeros(1, length(deltas));
+   order(1) = 0;
+   for j = 2:length(deltas)
+       order(j) = log2(errors(i, j - 1) / errors(i, j));
+   end
+   
+   error_approx = zeros(size(deltas));
+   for j = 1:length(deltas)
+       error_approx(j) = error(best_approx, approxes{i, j}, deltas(j));
+   end
+   
+   
+   
    plot(x_vals, precise, '-k');
    legend('1', '0.5', '0.25', '0.125', 'precise');
    
@@ -43,22 +66,17 @@ for i = 1:length(funs)
     title(names(i));
     hold off
     
-    saveas(figure_label, names{i});
+    saveas(figure_label, names{i});    
+    
 
     format short
-    fprintf('delta'); disp(deltas)
+    fprintf('delta\t   '); disp(deltas)
     format shortEng
-    fprintf('error'); disp(errors(i, :));
-    fprintf('error red.\n');
-    fprintf('error app.\n');
+    fprintf('error\t    '); disp(errors(i, :));
+    fprintf('error red.'); disp(order);
+    fprintf('error app.  '); disp(error_approx);
     fprintf('\n\n');
 end
-
-order = zeros(3, 3);
-for i = 2:length(errors)
-    order(:, i - 1) = log2(errors(:, i - 1) ./ errors(:, i));
-end
-mean(order, 2)
 
 
 end
@@ -100,7 +118,28 @@ function output = runge_kutta(fun_dot, f0, min, max, delta)
 end
 
 function e = error(precise, approx, delta)
-    e = sqrt((delta / 5) .* sum((approx - precise).^2));
+
+    if (length(precise) == length(approx))
+        e = sqrt((delta / 5) .* sum((approx - precise).^2));
+    
+    else % in case we compare inputs calculated with different deltas (they have different sizes)
+        longer = precise;
+        shorter = approx;
+        
+        if length(precise) < length(approx)
+            longer = approx;
+            shorter = precise;
+        end
+        
+        factor = (length(longer) - 1) / (length(shorter) - 1);
+        adjusted_longer = zeros(size(shorter));
+        
+        for i = 1:length(shorter)
+            adjusted_longer(i) = longer((i - 1) * factor + 1);
+        end
+        
+        e = sqrt((delta / 5) .* sum((adjusted_longer - shorter).^2));   
+        end
 end
 
 function n = steps(max, min, delta) 
