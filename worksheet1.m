@@ -10,9 +10,11 @@ min = 0;
 max = 5;
 deltas = [1, 0.5, 0.25, 0.125];
 
+
+
 funs = {@euler, @heun, @runge_kutta};
 names = {'explicit Euler method (q = 1)', 'method of Heun (q = 2)', 'Runge-Kutta method (q = 4)'};
-colours = {'red', 'blue', 'green'};
+colours = {'-r', '-b', '-g', '-m'};
 
 errors = zeros(length(funs), length(deltas));
 
@@ -21,8 +23,9 @@ for i = 1:length(funs)
     fprintf(strcat('\t\t', names{i}, '\n\n'));
     
     
-   figure(i);    
+   figure_label = figure(i);    
    hold on
+   grid
    for j = 1:length(deltas)
        delta = deltas(j);
        precise = p(min:delta:max);
@@ -30,13 +33,17 @@ for i = 1:length(funs)
        errors(i, j) = error(precise, approx, delta);
        
        x_vals = min:delta:max;
-       plot(x_vals, approx, x_vals, precise);
+       plot(x_vals, approx, colours{j});
    end
+   plot(x_vals, precise, '-k');
+   legend('1', '0.5', '0.25', '0.125', 'precise');
    
     xlabel('time');
     ylabel('value');
     title(names(i));
     hold off
+    
+    saveas(figure_label, names{i});
 
     format short
     fprintf('delta'); disp(deltas)
