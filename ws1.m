@@ -3,38 +3,83 @@ function [] = ws1()
 t_e=5;
 Dt=[1,1/2,1/4,1/8];
 
-plot_p_t(Dt(end),t_e)
+P_1=[0:Dt(1):t_e; pt(0:Dt(1):t_e);expliciteuler(Dt(1),t_e);heun(Dt(1),t_e);rungekutta(Dt(1),t_e)];
+P_2=[0:Dt(2):t_e; pt(0:Dt(2):t_e);expliciteuler(Dt(2),t_e);heun(Dt(2),t_e);rungekutta(Dt(2),t_e)];
+P_3=[0:Dt(3):t_e; pt(0:Dt(3):t_e);expliciteuler(Dt(3),t_e);heun(Dt(3),t_e);rungekutta(Dt(3),t_e)];
+P_4=[0:Dt(4):t_e; pt(0:Dt(4):t_e);expliciteuler(Dt(4),t_e);heun(Dt(4),t_e);rungekutta(Dt(4),t_e)];
 
-R=[Dt; ones(3,4)];
-for k=1:4
-R(2,k)=expliciteuler(Dt(k),t_e);
-R(3,k)=heun(Dt(k),t_e);
-R(4,k)=rungekutta(Dt(k),t_e);
-end
+E_exact_1=(Dt(1)/5)*sum((P_1(3:5,:)-[P_1(2,:);P_1(2,:);P_1(2,:)]).^2,2);
+E_exact_2=(Dt(2)/5)*sum((P_2(3:5,:)-[P_2(2,:);P_2(2,:);P_2(2,:)]).^2,2);
+E_exact_3=(Dt(3)/5)*sum((P_3(3:5,:)-[P_3(2,:);P_3(2,:);P_3(2,:)]).^2,2);
+E_exact_4=(Dt(4)/5)*sum((P_4(3:5,:)-[P_4(2,:);P_4(2,:);P_4(2,:)]).^2,2);
 
-% Just to check. Not part of needed output
-printmat(R,'Worksheet 1: Results','Dt Euler Heun RK', '1 1/2 1/4 1/8');
+E_exact= [E_exact_1, E_exact_2, E_exact_3, E_exact_4];
 
-V=10/(1+9*exp(-5));
+E_red= [zeros(3,1),E_exact_2./E_exact_1];
 
-E=[Dt; ones(3,4)];
+fprintf('Explicit Euler method (q=1)\n');
+format rat
+fprintf('Dt'); disp(Dt)
+format short
+fprintf('error'); disp(E_exact(1,:))
+fprintf('error red.');
+fprintf('error app.'); 
 
-for j=1:4
-for k=2:4
-    E(k,j)=sqrt((E(1,j)/5)*(R(k,j)-V)^2);
-end
-end
+fprintf('method of Heun (q=2)\n');
+format rat
+fprintf('Dt'); disp(Dt)
+format short
+fprintf('error'); disp(E_exact(2,:))
+fprintf('error red.'); 
+fprintf('error app.'); 
 
-% Just to check. Not part of needed output
-printmat(E,'Worksheet 1: Errors','Dt Exact Euler Heun RK', '1 1/2 1/4 1/8');
+fprintf('Runge-Kutta method (q=4)\n');
+format rat
+fprintf('Dt'); disp(Dt)
+format short
+fprintf('error'); disp(E_exact(2,:))
+fprintf('error red.'); 
+fprintf('error app.');
 
-Euler=[Dt;E(2,:);zeros(2,4)];
-Heun=[Dt;E(3,:);zeros(2,4)];
-RK=[Dt;E(4,:);zeros(2,4)];
 
-printmat(Euler,'Explicit Euler method (q=1)','Dt error error_red error_app','1 1/2 1/4 1/8') 
-printmat(Heun,'method of Heun (q=2)','Dt error error_red error_app','1 1/2 1/4 1/8') 
-printmat(Euler,'Runge-Kutta method (q=4)','Dt error error_red error_app','1 1/2 1/4 1/8') 
+figure(1);
+hold on
+grid on
+title('Explicit Euler method (q=1)');
+xlabel('t');
+ylabel('p(t)');
+plot(P_1(1,:),P_1(3,:)); 
+plot(P_2(1,:),P_2(3,:)); 
+plot(P_3(1,:),P_3(3,:)); 
+plot(P_4(1,:),P_4(3,:)); 
+plot_p_t(Dt(4),t_e)
+legend('Dt=1', 'Dt=1/2', 'Dt=1/4', 'Dt=1/8', 'Exact')
+
+figure(2);
+hold on
+grid on
+title('method of Heun (q=2)');
+xlabel('t');
+ylabel('p(t)');
+plot(P_1(1,:),P_1(4,:)); 
+plot(P_2(1,:),P_2(4,:)); 
+plot(P_3(1,:),P_3(4,:)); 
+plot(P_4(1,:),P_4(4,:)); 
+plot_p_t(Dt(4),t_e)
+legend('Dt=1', 'Dt=1/2', 'Dt=1/4', 'Dt=1/8', 'Exact')
+
+figure(3);
+hold on
+grid on
+title('Runge-Kutta method (q=4)');
+xlabel('t');
+ylabel('p(t)');
+plot(P_1(1,:),P_1(5,:)); 
+plot(P_2(1,:),P_2(5,:)); 
+plot(P_3(1,:),P_3(5,:)); 
+plot(P_4(1,:),P_4(5,:)); 
+plot_p_t(Dt(4),t_e)
+legend('Dt=1', 'Dt=1/2', 'Dt=1/4', 'Dt=1/8', 'Exact')
 
 end
 
@@ -42,50 +87,59 @@ function [] = plot_p_t(Dt,t_e)
 
 t=0:Dt:t_e;
 p=10./(1+9.*exp(-t));
-plot(p)
-title('p(t)=10/[1+9exp(-t)]');
-xlabel('t');
-ylabel('p(t)');
-grid on
+plot(t,p)
 
 end
 
+function [pt]=pt(t)
+
+pt=10./(1+9*exp(-t));
+
+end
 function [dpdt]=dpdt(p)
 
 dpdt=(1-p/10)*p;
 
 end
 
-function [p] = expliciteuler(Dt,t_e)
-
+function [P] = expliciteuler(Dt,t_e)
 p=1;
+P=0:Dt:t_e;
+n=1;
 for t=0:Dt:t_e
+P(n)=p;
 p=p+Dt*dpdt(p);
+n=n+1;
+end
 end
 
-end
-
-function [p] = heun(Dt,t_e)    
-    
+function [P] = heun(Dt,t_e)       
 p=1;
+P=0:Dt:t_e;
+n=1;
 for t=0:Dt:t_e
+P(n)=p;
 dpdt_1=dpdt(p);
 dpdt_2=dpdt(p+Dt*dpdt(p));
 p=p+Dt*(1/2)*(dpdt_1+dpdt_2);
+n=n+1;
+end
 end
 
-end
-
-function [p] = rungekutta(Dt,t_e)
+function [P] = rungekutta(Dt,t_e)
 
 p=1;
+P=0:Dt:t_e;
+n=1;
 for t=0:Dt:t_e
+P(n)=p;
 dpdt_1=dpdt(p);
 dpdt_2=dpdt(p+Dt*(1/2)*dpdt_1);
 dpdt_3=dpdt(p+Dt*(1/2)*dpdt_2);
 dpdt_4=dpdt(p+Dt*dpdt_3);
 p=p+Dt*(1/6)*(dpdt_1+2*dpdt_2+2*dpdt_3+dpdt_4);
-end
 
+n=n+1;
+end
 end
     
