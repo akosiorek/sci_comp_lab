@@ -1,10 +1,10 @@
-function worksheet2v1()
+function worksheet2()
     
     tic, clear, clc
     funs = {@ExpEuler, @Heun, @ImpEuler, @AdamMoulton, @AdamMoultonL1, @AdamMoultonL2};
-    names = {'Explicit Euler method (q = 1)', 'Method of Heun (q = 2)', 'Implicit Euler (q = 1)', 'Adam-Moulton Method (q = 2)', 'Adam-Moulton Linerization 1 (q = 2)', 'Adam-Moulton Linerization 2 (q = 2)'};  % Method names
+    names = {'Explicit Euler method (q = 1)', 'Method of Heun (q = 2)', 'Implicit Euler (q = 1)', 'Adam-Moulton Method (q = 2)', 'Adam-Moulton Linerization 1 (q = 1)', 'Adam-Moulton Linerization 2 (q = 1)'};  % Method names
     deltas = [1, 0.5, 0.25, 0.125, 0.0625, 0.03125]; % Array of timesteps
-    colours = {'-r', '-b', '-g', '-m', '-k', '-c', '--k'}; % Colours for graphs
+    colours = {'-r', '-b', '-g', '-m', '-k', '-c',   '--k'}; % Colours for graphs
     
     p = @(t) (200 ./ ( 20 - 10 * exp(-7*t)));  % Exact solution of p(t)
     p_dot = @(p) (p .* ( 7 - p .* 0.7));   % Gradient of p(t) at point p
@@ -41,7 +41,7 @@ function worksheet2v1()
    
         plot(x_vals, precise, colours{j+1}); % Add the precise solution on the held plot in 'j+1'th colour
         legend('dt=1', 'dt=0.5', 'dt=0.25', 'dt=0.125', 'dt=0.0625', 'dt=0.03125', 'dt=precise');  % Add legend
-        xlabel('time'); ylabel('value'); title(names(i)); % Add x-label, y-label, title (title from array of names)
+        xlabel('time'); ylabel('value'); title(names(i)); ylim([5 20]); % Add x-label, y-label, title (title from array of names)
         hold off     % Free figure for next iteration
         saveas(i, names{i}); % Save figure using array of names
     
@@ -107,25 +107,23 @@ function output = AdamMoulton(fun_dot, f0, min, max, delta, g, gd, e)
     end
 end
 
-function output = AdamMoultonL1(fun_dot, f0, min, max, delta, ~, ~, ~)
+function output = AdamMoultonL1(~, f0, min, max, delta, ~, ~, ~)
 
     N = Steps(max, min, delta); % Call steps for determining number of data points
     output = [f0, zeros(1, N-1)];
     for i = 2: N
         f = output(i - 1);
-        fnxt = ((7*delta+1)*f - (7*delta/20)*f^2)/(7*delta*f/20 + 1);
-        output(i) = f + delta * 0.5 * (fun_dot(f) + fun_dot(fnxt));% + (7*(1 - 0.1*fnxt)*f)); % Call fun_dot for derivative
+        output(i) = ((7*delta+1)*f - (7*delta/20)*f^2)/(7*delta*f/20 + 1);
     end
 end
 
-function output = AdamMoultonL2(fun_dot, f0, min, max, delta, ~, ~, ~)
+function output = AdamMoultonL2(~, f0, min, max, delta, ~, ~, ~)
     
     N = Steps(max, min, delta); % Call steps for determining number of data points
     output = [f0, zeros(1, N-1)];
     for i = 2: N
         f = output(i - 1);
-        fnxt = ((7*0.5*delta+1)*f - (7*delta/20)*f^2)/(7*delta*f/20 + 1 - 7*delta/2);
-        output(i) = f + delta * 0.5 * (fun_dot(f) + fun_dot(fnxt));% + (7*(1 - 0.1*f)*fnxt)); % Call fun_dot for derivative
+        output(i) = ((7*0.5*delta+1)*f - (7*delta/20)*f^2)/(7*delta*f/20 + 1 - 7*delta/2);
     end
 end
 
@@ -166,12 +164,12 @@ function e = Error(ref, approx, delta)  % Error calculator: Reference, Approxmat
 end
 
 function stable = Stability(exactSolution, approximation)
-%   Stability: Checks if a given vector is a stable approximation of an
-%   exact solution
+% Stability: Checks if a given vector is a stable approximation of an
+% exact solution
 
     errors = abs(approximation - exactSolution);
     trendLine = polyfit(1:length(approximation), errors, 1);
-    stable = trendLine(1) > 0;
+    stable = trendLine(1) < 0;
 end
 
 function n = Steps(max, min, delta) % Function to calculate number of points for given delta
