@@ -116,7 +116,6 @@ function output = AdamMoultonL1(fun_dot, f0, min, max, delta, ~, ~, ~)
         fnxt = ((7*delta+1)*f - (7*delta/20)*f^2)/(7*delta*f/20 + 1);
         output(i) = f + delta * 0.5 * (fun_dot(f) + fun_dot(fnxt));% + (7*(1 - 0.1*fnxt)*f)); % Call fun_dot for derivative
     end
-    disp(output)
 end
 
 function output = AdamMoultonL2(fun_dot, f0, min, max, delta, ~, ~, ~)
