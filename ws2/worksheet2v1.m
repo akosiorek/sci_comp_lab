@@ -17,6 +17,7 @@ function worksheet2()
     errors = zeros(length(funs), length(deltas));   % Array of errors (wrt exact solution)
     error_approx = zeros(size(deltas));             % Array of approx. errors (wrt solution at lowest timestep)
     approxes = cell(length(funs), length(deltas));  % Array of approximations (solutions)
+    stable = zeros(size(approxes));
     
     for i = 1: length(funs) % Method Loop
         fprintf(strcat('\t\t', names{i}, '\n\n'));   % Display active method name
@@ -37,6 +38,8 @@ function worksheet2()
             end 
             x_vals = min: delta: max;  % Create array for x-axis
             plot(x_vals, approxes{i, j}, colours{j});    % Add approximation for step-size j on held plot in jth colour
+            
+            stable(i, j) = Stability(precise, approxes{i, j});
         end  % End of timestep loop
    
         plot(x_vals, precise, colours{j+1}); % Add the precise solution on the held plot in 'j+1'th colour
@@ -58,6 +61,7 @@ function worksheet2()
         format shortEng, fprintf('error\t    '); disp(errors(i, :)); % Display errors
         fprintf('error red.'); disp(order);  % Display order
         fprintf('error app.  '); disp(error_approx); % Display approximate errors
+        fprintf('stability.'); disp(stable(i, :));
         fprintf('\n\n'); % Spacing to visually differentiate b/w outputs of different methods
     end     % End of method loop
 
