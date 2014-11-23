@@ -166,12 +166,16 @@ function [] = PlotResults(t, Nx, Ny, index,N, GSS)
   subplot(4, 2, index); %Assign subplot position
   index=index+1;
   mesh(x, y, T); %Surface plot
+  axis equal
+  pbaspect([1 1 1])
   title(strcat('Surface plot for Nx=Ny= ', N)); %Add title, labels...
   xlabel('x');
   ylabel('y');
   zlabel('T');
   subplot(4, 2, index);
   contour(x, y, T); %Contour plot
+  axis equal
+  pbaspect([1 1 1])
   title(strcat('Countour plot for Nx=Ny= ', N));
   xlabel('x');
   ylabel('y');
