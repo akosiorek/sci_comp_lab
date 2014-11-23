@@ -15,7 +15,7 @@ function [] = worksheet3()
      N= {'7' , '15' , '31', '63', '127'};
      
      solvers = {@FullMatrixSolver, @SparseMatrixSolver,@GaussSeidelSolverS}; %Arrays of solver functions and names
-     solversNames = {'direct solution with full matrix', 'direct solution with sparse matrix', 'iterative solution with Gauss-Seidel'};
+     solversNames = {'Direct Solution with Full Matrix', 'Direct Solution with Sparse Matrix', 'Iterative Solution with Gauss-Seidel'};
      
      solutions = cell(length(solvers),length(Nx)); %Arrays for storing solutions, runtimes, storage requirements and errors
      runTimes = zeros(length(solvers),length(Nx));
@@ -57,8 +57,9 @@ function [] = worksheet3()
                 GSS=1; %Using Gauss-Seidel Solver
             end
             
-            figure (i)
-           
+               hFig = figure(i);
+               set(hFig, 'Position', [50, 50, 1000, 600])
+            
             PlotResults(solutions{i,j}, Nx(j), Ny(j),index,N{j},GSS) %Plot results
             suptitle(solversNames{i}); %Subplots title
             
