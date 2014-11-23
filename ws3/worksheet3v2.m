@@ -134,7 +134,7 @@ function [] = PlotResults(t, Nx, Ny, index,N, GSS)
   end
   x = 0:1/(Nx+1):1; %Set x and y
   y = 0:1/(Ny+1):1;
-  subplot(4, 2, index); %Assign subplot position
+  subplot(2, 4, index); %Assign subplot position
   index=index+1;
   mesh(x, y, T); %Surface plot
   axis equal
@@ -143,7 +143,7 @@ function [] = PlotResults(t, Nx, Ny, index,N, GSS)
   xlabel('x');
   ylabel('y');
   zlabel('T');
-  subplot(4, 2, index);
+  subplot(2, 4, index);
   contour(x, y, T); %Contour plot
   axis equal
   pbaspect([1 1 1])
