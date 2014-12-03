@@ -18,7 +18,6 @@ function [] = worksheet4()
         figure(figH(i));    % Create figures
         set(figH(i), 'Visible', 'off'); % Hide them temporarily
         set(figH(i), 'Position', [25, 25, 1300, 800]);  % Set size
-        title(strcat('State of Solutions at t = ', dT(i)));  % Set title
         set(gcf, 'color', 'white');
     end
     
@@ -36,5 +35,10 @@ function [] = worksheet4()
                 k = k + 1;
             end
         end
+    end
+    
+    for i = 1: length(figH)
+        figure(figH(i));    % Activate figure i
+        suptitle(strcat('State of Solutions at t = ', dT(i)));  % Set title
     end
 end
