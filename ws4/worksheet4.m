@@ -40,18 +40,19 @@ function [] = worksheet4()
                 handles=zeros(rows,columns);
                 handles(i,j) = subplot(rows,columns,j+(i-1)*columns);
                 set(gcf, 'renderer', 'zbuffer');
+                set(gca, 'fontsize', 8);
                 mesh(x, y, T); %Surface plot
                 pbaspect([1 1 1]);
                 xlabel('x'); ylabel('y'); zlabel('T');
                 
                 %Subplot column labels
                 if i == 1
-                    text(0.25, 1.25, strcat('dt=', dels{j}), 'Units', 'normalized', 'FontSize', 12);
+                    text(0.25, 1.32, strcat('dt=', dels{j}), 'Units', 'normalized', 'FontSize', 7);
                 end
                 
                 %Subplot row labels
                 if j == 1
-                    text(-1.1, 0.5, strcat('Nx=Ny=', N{i}), 'Units', 'normalized', 'FontSize', 12);
+                    text(-1.1, 0.5, strcat('N=', N{i}), 'Units', 'normalized', 'FontSize', 7);
                 end
                 
                 set(figH(k), 'Visible', 'off'); % Hide figure temporarily
@@ -85,17 +86,18 @@ function [] = worksheet4()
             handles = zeros(rows,columns);
             handles(i,j) = subplot(rows,columns,j+(i-1)*columns);
             set(gcf, 'renderer', 'zbuffer');
+            set(gca, 'fontsize', 8);
             mesh(x, y, T); %Surface plot
             pbaspect([1 1 1]);
             xlabel('x'); ylabel('y'); zlabel('T');           
             
             %Subplot column labels
             if i == 1
-                text(0.25, 1.25, strcat('dt=', dels{j}), 'Units', 'normalized', 'FontSize', 12);
+                text(0.25, 1.32, strcat('dt=', dels{j}), 'Units', 'normalized', 'FontSize', 7);
             end
             %Subplot row labels
             if j == 1
-                text(-1.75, 0.5, strcat('Nx=Ny=', N{i}), 'Units', 'normalized', 'FontSize', 12);
+                text(-1.75, 0.5, strcat('N=', N{i}), 'Units', 'normalized', 'FontSize', 7);
             end
             
             set(4+k, 'Visible', 'off'); % Hide figure temporarily
@@ -113,14 +115,16 @@ function [] = worksheet4()
     for i = 1: length(figH)
         figure(figH(i));    % Activate figure i
         suptitle(strcat('State of Solutions of Explicit Euler scheme at t = ', dT(i)));  % Set title
-        imwrite(figH(i), dTlexp(k: k+10));
+        set(gcf,'PaperUnits','inches','PaperPosition',[0 0 13 8])
+        saveas(figH(i), dTlexp(k: k+10));
         k = k + 11;
     end
     k = 1;
     for i=1:4
         figure(4+i);
         suptitle(strcat('State of Solutions of Implicit Euler scheme at t = ', dT(i)));
-        imwrite(figH(i), dTlimp(k: k+10));
+        set(gcf,'PaperUnits','inches','PaperPosition',[0 0 8 10])
+        saveas(4+i, dTlimp(k: k+10));
         k = k + 11;
     end
     
