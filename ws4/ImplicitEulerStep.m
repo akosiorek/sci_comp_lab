@@ -20,7 +20,7 @@ function [T, runTime] = ImplicitEulerStep(oldT, dt)
     
     res = 1;  % Define residual parameter
     tic
-    iter = 0
+    %iter = 0;
     while res > 10^-6    % Check for convergence
         res = 0;    % Set residual at beginning of iteration to zero
         for j = 2 : Ny + 1
@@ -36,7 +36,7 @@ function [T, runTime] = ImplicitEulerStep(oldT, dt)
             end
         end
         res = sqrt(res/(Nx*Ny));  % Root-mean
-        iter = iter + 1;
+       %iter = iter + 1;
     end   
     runTime = toc;  
 end

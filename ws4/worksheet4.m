@@ -28,7 +28,7 @@ function [] = worksheet4()
     for i = 1: length(Nx)
         fprintf(strcat('Solving for Nx=Ny=', N{i}, ' ... \n\n' ));
         for j = 1: length(deltas)
-            T = [zeros(1,Nx(i)+2); zeros(Nx(i),1),ones(Nx(i),Nx(i)), zeros(Nx(i),1); zeros(1,Nx(i)+2)]; %Initialize T matrix 
+            T = padarray(ones(Nx(i)), [1 1]); %Initialize T matrix
             for k=1:length(dispTimes)
                 T = ExpEulTemporalSolver(deltas(j), dispTimes(k)-1/8, dispTimes(k), T, Lx, Ly);  % Call Explicit Euler Temporal Solver and update T
                 x = 0: 1/(Nx(i)+1): 1;   % Set x and y
@@ -71,9 +71,9 @@ function [] = worksheet4()
     for i = 1: length(Nx)
         fprintf(strcat('Solving for Nx=Ny=', N{i}, ' ... \n\n' ));
         j = 1;
-        T = [zeros(1,Nx(i)+2); zeros(Nx(i),1),ones(Nx(i),Nx(i)), zeros(Nx(i),1); zeros(1,Nx(i)+2)]; %Initialize T matrix 
+        T = padarray(ones(Nx(i)), [1 1]); %Initialize T matrix
         for k = 1:length(dispTimes)
-            T = ImpEulTemporalSolver(deltas(j), dispTimes(k)-1/8, dispTimes(k), T, Lx, Ly);  % Call Explicit Euler Temporal Solver and update T
+            T = ImpEulTemporalSolver(deltas(j), dispTimes(k)-1/8, dispTimes(k), T, Lx, Ly);  % Call Implicit Euler Temporal Solver and update T
             x = 0: 1/(Nx(i)+1): 1;   % Set x and y
             y = 0: 1/(Ny(i)+1): 1;
             
@@ -114,7 +114,7 @@ function [] = worksheet4()
     k = 1;
     for i = 1: length(figH)
         figure(figH(i));    % Activate figure i
-        suptitle(strcat('State of Solutions of Explicit Euler scheme at t = ', dT(i)));  % Set title
+        %suptitle(strcat('State of Solutions of Explicit Euler scheme at t = ', dT(i)));  % Set title
         set(gcf,'PaperUnits','inches','PaperPosition',[0 0 13 8])
         saveas(figH(i), dTlexp(k: k+10));
         k = k + 11;
@@ -122,7 +122,7 @@ function [] = worksheet4()
     k = 1;
     for i=1:4
         figure(4+i);
-        suptitle(strcat('State of Solutions of Implicit Euler scheme at t = ', dT(i)));
+%        suptitle(strcat('State of Solutions of Implicit Euler scheme at t = ', dT(i)));
         set(gcf,'PaperUnits','inches','PaperPosition',[0 0 8 10])
         saveas(4+i, dTlimp(k: k+10));
         k = k + 11;
@@ -132,6 +132,6 @@ function [] = worksheet4()
     dtlabels = 'dt=1/64 dt=1/128 dt=1/256 dt=1/512 dt=1/1024 dt=1/2048 dt=1/4096';
     Nlabels = 'Nx=Ny=3 Nx=Ny=7 Nx=Ny=15 Nx=Ny=31';
     format short
-    printmat(stabilityExp,'Stable Cases for Explicit Euler Scheme', Nlabels, dtlabels)
-    printmat(stabilityImp,'Stable Cases for Implicit Euler Scheme', Nlabels, 'dt=1/64')
+    %printmat(stabilityExp,'Stable Cases for Explicit Euler Scheme', Nlabels, dtlabels)
+    %printmat(stabilityImp,'Stable Cases for Implicit Euler Scheme', Nlabels, 'dt=1/64')
 end
